@@ -1,0 +1,31 @@
+-- Whitelist simples (coloque os UserIds permitidos aqui)
+local ALLOWED = {
+    [9717419505] = true, -- exemplo: substitua por IDs reais
+    [87654321] = true,
+}
+
+local function notify(msg)
+    pcall(function()
+        local StarterGui = game:GetService("StarterGui")
+        StarterGui:SetCore("SendNotification", {Title="Whitelist"; Text=msg; Duration=5})
+    end)
+end
+
+local function checkWhitelist()
+    local Players = game:GetService("Players")
+    local pl = Players.LocalPlayer
+    if not pl then
+        -- se executado no servidor ou ambiente sem LocalPlayer, bloqueia por segurança
+        return false
+    end
+
+    local ok, allowed = pcall(function() return ALLOWED[pl.UserId] end)
+    if ok and allowed then
+        return true
+    end
+
+    notify("Você não está na whitelist. Execução cancelada.")
+    return false
+end
+
+return checkWhitelist
